@@ -1,5 +1,4 @@
 
-
 # direction: 0=위, 1=왼쪽, 2=아래, 3=오른쪽
 direction = 2
 x = 0
@@ -52,16 +51,12 @@ def solution(command):
     for i in command:
         if i == 'R':
             turnRight()
-
         elif i == 'L':
             turnLeft()
-
         elif i == 'G':
             go()
-
         elif i == 'B':
             back()
-
     print("최종 위치", x, y)
 
 
