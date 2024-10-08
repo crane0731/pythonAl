@@ -1,59 +1,55 @@
-#백준 1913번
 import sys
-input=sys.stdin.readline
+input = sys.stdin.read
 
+# 전역 변수 설정
+N = 0
+arr = []
+dr = [1, -1, 0, 0]  # 상하좌우 이동을 위한 리스트
+dc = [0, 0, -1, 1]
+answer = 0
 
-#하-우-상-좌
-# dr=[1,0,-1,0]
-# dc=[0,1,0,-1]
+def dfs(r, c):
+    cnt = 1
+    arr[r][c] = 0  # 방문한 곳은 0으로 만듦
+    stack = [(r, c)]  # 스택을 리스트로 생성하여 시작 좌표 넣기
 
-#상-우-하-좌
-dr=[-1,0,1,0]
-dc=[0,1,0,-1]
-targetR=0
-targetC=0
+    while stack:
+        cur_r, cur_c = stack.pop()  # 스택에서 좌표 꺼내기
 
-N=int(input())
-NUMBER=int(input())
-ANSWER=[]
-snail=[[0]* N for _ in range(N)] #2차원 리스트 초기화
-# r=c=d=0
-d=0
-r=N//2
-c=N//2
+        # 4방향 탐색
+        for i in range(4):
+            nr = cur_r + dr[i]
+            nc = cur_c + dc[i]
 
-# N**N 부터 1까지 차례로 순회하며 할당한다.
-for num in range(1,N**2+1):
-    #해당 좌표에 해당 숫자를 할당한다.
+            # 범위 체크
+            if nr < 0 or nr >= N or nc < 0 or nc >= N:
+                continue
 
-    snail[r][c]=num
+            # 이미 방문했거나 집이 없으면 넘어가기
+            if arr[nr][nc] == 0:
+                continue
 
-    #기본적으로 기존 방향을 유지하며 다음 좌표를 설정한다.
-    nr=r+dr[d]
-    nc=c+dc[d]
+            stack.append((nr, nc))  # 스택에 새 좌표 추가
+            arr[nr][nc] = 0  # 방문한 곳은 0으로
+            cnt += 1  # 마을 개수 추가
 
-    #다음 좌표가 범위를 벗어나는 경우 또는 다음 좌표에 이미 숫자가 할당된 경우 방향을 전환한다.
-    #단축 평가를 조심하자
+    return cnt
 
-    if nr<0 or nr>=N or nc<0 or nc>=N or snail[nr][nc] !=0:
-        #아래와 같이 방향 전환 좌표를 설정하면 3=>0으로의 방향 전환이 가능하다.
-        d=(d+1)%4
-        nr = r + dr[d]
-        nc = c + dc[d]
+def main():
+    global N, arr, answer
 
-    #위에서 계산한 다음 좌표를 현재 좌표로 최신화 한 후 다음 반복으로 넘어간다.
-    r=nr
-    c=nc
+    # 입력 처리
+    N = int(input().strip())
+    arr = [list(map(int, input().split())) for _ in range(N)]
 
-for i,row in enumerate(snail):
-    for j,value in enumerate(row):
-        if value==NUMBER:
-            ANSWER.append(i+1)
-            ANSWER.append(j+1)
-    print(*row)
+    # 행 우선 순회를 하며 dfs로 군집 찾기
+    for i in range(N):
+        for j in range(N):
+            if arr[i][j] == 1:  # 사람이 있는 집을 찾으면 dfs 시작
+                answer = max(answer, dfs(i, j))
 
-print(*ANSWER)
+    print(answer)  # 마을 군집의 최댓값 출력
 
-
-
-
+# 프로그램 시작
+if __name__ == "__main__":
+    main()
